@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const tslib_1 = require("tslib");
 const egg_1 = require("egg");
-const router_1 = require("egg-cool-router");
+const router_1 = require("router");
 /**
  * 控制器基类
  */
