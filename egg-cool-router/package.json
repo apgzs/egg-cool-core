@@ -1,0 +1,17 @@
+{
+  "name": "egg-cool-router",
+  "version": "1.2.2",
+  "description": "cool-admin.com 基于注解的路由",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "egg",
+    "cool-admin",
+    "controller"
+  ],
+  "author": "cool-admin.com",
+  "license": "ISC"
+}

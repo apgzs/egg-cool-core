@@ -1,0 +1,22 @@
+{
+  "name": "egg-cool-controller",
+  "version": "1.2.4",
+  "description": "cool-admin.com 基础控制器",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+
+  "dependencies": {
+    "egg-cool-router": "^1.2.2"
+  },
+
+  "keywords": [
+    "egg",
+    "cool-admin",
+    "controller"
+  ],
+  "author": "cool-admin.com",
+  "license": "ISC"
+}

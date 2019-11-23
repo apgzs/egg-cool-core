@@ -1,0 +1,22 @@
+{
+  "name": "egg-cool-entity",
+  "version": "1.2.3",
+  "description": "cool-admin.com 基础数据模型",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+
+  "dependencies": {
+    "egg-cool-router": "^1.2.2"
+  },
+
+  "keywords": [
+    "egg",
+    "cool-admin",
+    "controller"
+  ],
+  "author": "cool-admin.com",
+  "license": "ISC"
+}
