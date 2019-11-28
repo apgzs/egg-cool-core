@@ -84,6 +84,11 @@ export declare abstract class BaseService extends Service {
      */
     delete(ids: any, entity: any): Promise<void>;
     /**
+     * 修改数据之后执行的操作，修改数据包括默认的：'add'、'update'、'delete' 等方法
+     * @param data
+     */
+    modifyAfter(data: any): Promise<void>;
+    /**
      * query
      * @param data
      * @param query

@@ -123,6 +123,7 @@ class BaseService extends egg_1.Service {
         if (!entity)
             throw new Error(conf.errTips.noEntity);
         await entity.save(param);
+        await this.modifyAfter(param);
     }
     /**
      * 新增/修改
@@ -135,6 +136,7 @@ class BaseService extends egg_1.Service {
         if (!param.id)
             throw new Error(conf.errTips.noId);
         await entity.update(param.id, param);
+        await this.modifyAfter(param);
     }
     /**
      * 根据ID获得信息
@@ -160,6 +162,15 @@ class BaseService extends egg_1.Service {
         else {
             await entity.delete(ids.split(','));
         }
+        await this.modifyAfter(ids);
+    }
+
+    /**
+     * 修改数据之后执行的操作，修改数据包括默认的：'add'、'update'、'delete' 等方法
+     * @param data
+     * @returns {Promise<void>}
+     */
+    async modifyAfter(data) {
     }
     /**
      * query
