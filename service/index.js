@@ -122,7 +122,7 @@ class BaseService extends egg_1.Service {
     async add(param, entity) {
         if (!entity)
             throw new Error(conf.errTips.noEntity);
-        await entity.save(param);
+        await this.addOrUpdate(param,entity);
         await this.modifyAfter(param);
     }
     /**
@@ -135,7 +135,7 @@ class BaseService extends egg_1.Service {
             throw new Error(conf.errTips.noEntity);
         if (!param.id)
             throw new Error(conf.errTips.noId);
-        await entity.update(param.id, param);
+        await this.addOrUpdate(param,entity);
         await this.modifyAfter(param);
     }
     /**
