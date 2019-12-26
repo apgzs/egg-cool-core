@@ -22,6 +22,7 @@ module.exports = {
      */
     esModle(model) {
         const es = this.es;
+        // 查询
         const find = function (body) {
             return es.search({
                 index: model,
@@ -33,6 +34,7 @@ module.exports = {
                 }) || []
             });
         };
+        // 分页查询
         const findPage = function (page = 1, body = {}, size = 20) {
             body.from = (page - 1) * size;
             body.size = size;
@@ -54,6 +56,7 @@ module.exports = {
                 }
             });
         };
+        // 根据ID查询
         const findById = function (id) {
             return es.get({
                 index: model,
@@ -66,6 +69,7 @@ module.exports = {
                 return undefined
             })
         };
+        // 根据多个ID查询
         const findByIds = function (ids) {
             assert(ids, 'ids cannot be empty')
             return es.mget({
@@ -86,6 +90,7 @@ module.exports = {
                 return undefined
             })
         }
+        // 创建索引
         const crateIndex = function (body, refresh = false) {
             if (body.id) {
                 delete body.id
@@ -105,15 +110,48 @@ module.exports = {
                 })
             }
         };
-        const deleteById = function (id) {
+        // 批量操作
+        const batchIndex = function (bodys, type = 'index', refresh = false) {
+            const list = []
+            for (const body of bodys) {
+                const typeO = {}
+                typeO[type] = {_index: model, _id: body.id}
+                if (body.id) {
+                    delete body.id
+                }
+                list.push(typeO)
+                if (type !== 'delete') {
+                    list.push(body)
+                }
+            }
+            return es.bulk({
+                index: model,
+                refresh,
+                type: '_doc',
+                body: list
+            })
+        }
+        // 删除索引
+        const deleteById = function (id, refresh = false) {
             assert(id, 'id cannot be empty')
             return es.delete({
                 index: model,
                 type: '_doc',
+                refresh,
                 id
             })
         };
-        const updateById = function (body) {
+        // 批量删除索引
+        const deleteByQuery = function (body, refresh = false) {
+            return es.deleteByQuery({
+                index: model,
+                type: '_doc',
+                refresh,
+                body
+            })
+        };
+        // 更新索引
+        const updateById = function (body, refresh = false) {
             const id = body.id
             assert(id, 'id cannot be empty')
             delete body.id
@@ -121,11 +159,13 @@ module.exports = {
                 index: model,
                 type: '_doc',
                 id: id,
+                refresh,
                 body: {
                     doc: body
                 }
             })
         };
+        // 查询条数
         const findCount = function (body) {
             return es.count({
                 index: model,
@@ -136,6 +176,7 @@ module.exports = {
                 return undefined
             })
         };
+        // 原生查询，带模型
         const nativeWithModel = function (method, body) {
             return es[method]({
                 index: model,
@@ -144,16 +185,18 @@ module.exports = {
             })
         };
         return {
-            find,
-            findCount,
-            findById,
-            findByIds,
-            crateIndex,
-            deleteById,
-            updateById,
-            native: es,
-            nativeWithModel,
-            findPage
+            find, // 查询
+            findCount, // 查询条数
+            findById, // 根据ID查询
+            findByIds, // 根据多个ID查询
+            crateIndex, // 创建索引
+            batchIndex, // 批量操作
+            deleteById, // 删除索引
+            deleteByQuery, // 批量删除
+            updateById, // 更新索引
+            native: es, // 原生查询
+            nativeWithModel, // 原生带模型查询
+            findPage, // 分页查询
         }
     },
 
