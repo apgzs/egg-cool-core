@@ -23,8 +23,9 @@ class BaseService extends egg_1.Service {
      * 执行SQL并获得分页数据
      * @param sql 执行的sql语句
      * @param query 分页查询条件
+     * @param connectionName 连接名称
      */
-    async sqlRenderPage(sql, query) {
+    async sqlRenderPage(sql, query, connectionName) {
         const { size = conf.size, page = 1, order = 'createTime', sort = 'desc' } = query;
         if (order && sort) {
             if (!await this.paramSafetyCheck(order + sort)) {
@@ -37,8 +38,8 @@ class BaseService extends egg_1.Service {
         sql += ' LIMIT ?,? ';
         let params = [];
         params = params.concat(this.sqlParams);
-        const result = await this.nativeQuery(sql, params);
-        const countResult = await this.nativeQuery(this.getCountSql(sql), params);
+        const result = await this.nativeQuery(sql, params, connectionName);
+        const countResult = await this.nativeQuery(this.getCountSql(sql), params, connectionName);
         return {
             list: result,
             pagination: {
@@ -52,15 +53,16 @@ class BaseService extends egg_1.Service {
      * 原生查询
      * @param sql
      * @param params
+     * @param connectionName
      */
-    async nativeQuery(sql, params) {
+    async nativeQuery(sql, params, connectionName) {
         if (_.isEmpty(params)) {
             params = this.sqlParams;
         }
         let newParams = [];
         newParams = newParams.concat(params);
         this.sqlParams = [];
-        return await this.getOrmManager().query(sql, newParams);
+        return await this.getOrmManager(connectionName).query(sql, newParams);
     }
     /**
      * 参数安全性检查
@@ -266,15 +268,17 @@ class BaseService extends egg_1.Service {
     }
     /**
      * 获得ORM管理
+     *  @param connectionName 连接名称
      */
-    getOrmManager() {
-        return typeorm_1.getManager();
+    getOrmManager(connectionName) {
+        return typeorm_1.getManager(connectionName);
     }
     /**
      * 获得ORM连接类
+     *  @param connectionName 连接名称
      */
-    getOrmConnection() {
-        return typeorm_1.getConnection();
+    getOrmConnection(connectionName) {
+        return typeorm_1.getConnection(connectionName);
     }
     /**
      * 获得query请求参数

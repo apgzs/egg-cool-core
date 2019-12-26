@@ -9,8 +9,9 @@ export declare abstract class BaseService extends Service {
      * 执行SQL并获得分页数据
      * @param sql 执行的sql语句
      * @param query 分页查询条件
+     * @param connectionName 连接名称
      */
-    sqlRenderPage(sql: any, query: any): Promise<{
+    sqlRenderPage(sql: any, query: any, connectionName?: string): Promise<{
         list: any;
         pagination: {
             page: number;
@@ -20,10 +21,11 @@ export declare abstract class BaseService extends Service {
     }>;
     /**
      * 原生查询
-     * @param sql
-     * @param params
+     * @param sql 执行的sql语句
+     * @param params 参数
+     * @param connectionName 连接名称
      */
-    nativeQuery(sql: any, params?: any): Promise<any>;
+    nativeQuery(sql: any, params?: any[], connectionName?: string): Promise<any>;
     /**
      * 参数安全性检查
      * @param params
@@ -125,12 +127,14 @@ export declare abstract class BaseService extends Service {
     getRepo(): any;
     /**
      * 获得ORM管理
+     * @param connectionName 连接名称
      */
-    getOrmManager(): import("typeorm").EntityManager;
+    getOrmManager(connectionName?: string): import("typeorm").EntityManager;
     /**
      * 获得ORM连接类
+     * @param connectionName 连接名称
      */
-    getOrmConnection(): import("typeorm").Connection;
+    getOrmConnection(connectionName?: string): import("typeorm").Connection;
     /**
      * 获得query请求参数
      */

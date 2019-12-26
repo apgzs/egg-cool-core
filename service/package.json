@@ -1,6 +1,6 @@
 {
   "name": "egg-cool-service",
-  "version": "1.2.5",
+  "version": "1.2.7",
   "description": "cool-admin.com 基础服务层",
   "main": "index.js",
   "types": "index.d.ts",
