@@ -11,6 +11,7 @@ declare class RouterDecorator {
     del: HttpFunction;
     options: HttpFunction;
     put: HttpFunction;
+    all: HttpFunction;
     /**
      * 记录各个class的prefix以及相关中间件
      * 最后统一设置

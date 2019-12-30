@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", {value: true});
 const _ = require('lodash');
 const tslib_1 = require("tslib");
 /** http方法名 */
-const HTTP_METHODS = ['get', 'post', 'patch', 'del', 'options', 'put'];
+const HTTP_METHODS = ['get', 'post', 'patch', 'del', 'options', 'put', 'all'];
 
 let baseControllerArr = [];
 
