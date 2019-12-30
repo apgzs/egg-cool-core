@@ -29,7 +29,7 @@ module.exports = {
                 body
             }).then(res => {
                 return res.hits.hits.map(e => {
-                    e._source.id = e._id
+                    e._source.id = e._id;
                     return e._source
                 }) || []
             });
@@ -43,9 +43,9 @@ module.exports = {
                 body
             }).then(res => {
                 const result = res.hits.hits.map(e => {
-                    e._source.id = e._id
+                    e._source.id = e._id;
                     return e._source
-                }) || []
+                }) || [];
                 return {
                     list: result,
                     pagination: {
@@ -63,7 +63,7 @@ module.exports = {
                 type: '_doc',
                 id
             }).then(res => {
-                res._source.id = res._id
+                res._source.id = res._id;
                 return res._source || undefined
             }).catch(e => {
                 return undefined
@@ -71,7 +71,7 @@ module.exports = {
         };
         // 根据多个ID查询
         const findByIds = function (ids) {
-            assert(ids, 'ids cannot be empty')
+            assert(ids, 'ids cannot be empty');
             return es.mget({
                 index: model,
                 type: '_doc',
@@ -80,20 +80,20 @@ module.exports = {
                 }
             }).then(res => {
                 const result = res.docs.map(e => {
-                    e._source.id = e._id
+                    e._source.id = e._id;
                     return e._source || 'undefined'
-                })
+                });
                 return result.filter(e => {
                     return e !== 'undefined'
                 })
             }).catch(e => {
                 return undefined
             })
-        }
+        };
         // 创建索引
         const crateIndex = function (body, refresh = false) {
             if (body.id) {
-                delete body.id
+                delete body.id;
                 return es.index({
                     id: body.id,
                     index: model,
@@ -110,16 +110,16 @@ module.exports = {
                 })
             }
         };
-        // 批量操作
+        // 批量操作 type： index、create、delete、update
         const batchIndex = function (bodys, type = 'index', refresh = false) {
-            const list = []
+            const list = [];
             for (const body of bodys) {
-                const typeO = {}
-                typeO[type] = {_index: model, _id: body.id}
+                const typeO = {};
+                typeO[type] = {_index: model, _id: body.id};
                 if (body.id) {
                     delete body.id
                 }
-                list.push(typeO)
+                list.push(typeO);
                 if (type !== 'delete') {
                     list.push(body)
                 }
@@ -130,15 +130,37 @@ module.exports = {
                 type: '_doc',
                 body: list
             })
-        }
+        };
         // 删除索引
         const deleteById = function (id, refresh = false) {
-            assert(id, 'id cannot be empty')
+            assert(id, 'id cannot be empty');
             return es.delete({
                 index: model,
                 type: '_doc',
                 refresh,
                 id
+            })
+        };
+        // 批量删除索引
+        const deleteByIds = function (ids = [], refresh = false) {
+            const body = {
+                query: {
+                    bool: {
+                        must: [
+                            {
+                                terms: {
+                                    _id: ids
+                                }
+                            }
+                        ]
+                    }
+                }
+            };
+            return es.deleteByQuery({
+                index: model,
+                type: '_doc',
+                refresh,
+                body
             })
         };
         // 批量删除索引
@@ -152,9 +174,9 @@ module.exports = {
         };
         // 更新索引
         const updateById = function (body, refresh = false) {
-            const id = body.id
-            assert(id, 'id cannot be empty')
-            delete body.id
+            const id = body.id;
+            assert(id, 'id cannot be empty');
+            delete body.id;
             return es.update({
                 index: model,
                 type: '_doc',
@@ -192,6 +214,7 @@ module.exports = {
             crateIndex, // 创建索引
             batchIndex, // 批量操作
             deleteById, // 删除索引
+            deleteByIds, // 批量删除
             deleteByQuery, // 批量删除
             updateById, // 更新索引
             native: es, // 原生查询
