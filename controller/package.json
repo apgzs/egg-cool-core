@@ -1,6 +1,6 @@
 {
   "name": "egg-cool-controller",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "description": "cool-admin.com 基础控制器",
   "main": "index.js",
   "types": "index.d.ts",
@@ -9,7 +9,6 @@
   },
 
   "dependencies": {
-    "egg-cool-router": "^1.2.2"
   },
 
   "keywords": [
