@@ -93,9 +93,10 @@ module.exports = {
         // 创建索引
         const crateIndex = function (body, refresh = false) {
             if (body.id) {
+                const id = body.id;
                 delete body.id;
                 return es.index({
-                    id: body.id,
+                    id,
                     index: model,
                     refresh,
                     type: '_doc',
