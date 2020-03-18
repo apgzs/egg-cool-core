@@ -1,10 +1,14 @@
 import { Service, Context } from 'egg';
+import assert from 'assert';
 /**
  * 服务基类
  */
 export declare abstract class BaseService extends Service {
     sqlParams: any;
+    assert: assert;
+    entity: any;
     constructor(ctx: Context);
+
     /**
      * 执行SQL并获得分页数据
      * @param sql 执行的sql语句
@@ -42,7 +46,7 @@ export declare abstract class BaseService extends Service {
      * @param query
      * @param option
      */
-    page(query: any, option: any, entity: any): Promise<{
+    page(query: any, option: any, entity?: any): Promise<{
         list: any;
         pagination: {
             page: number;
@@ -54,37 +58,37 @@ export declare abstract class BaseService extends Service {
      * 所有数据
      * @param entity
      */
-    list(entity: any): Promise<any>;
+    list(entity?: any): Promise<any>;
     /**
      * 新增/修改
      * @param entity 实体
      * @param param 数据
      */
-    addOrUpdate(param: any, entity: any): Promise<void>;
+    addOrUpdate(param: any, entity?: any): Promise<void>;
     /**
      * 新增/修改
      * @param entity 实体
      * @param param 数据
      */
-    add(param: any, entity: any): Promise<void>;
+    add(param: any, entity?: any): Promise<void>;
     /**
      * 新增/修改
      * @param entity 实体
      * @param param 数据
      */
-    update(param: any, entity: any): Promise<void>;
+    update(param: any, entity?: any): Promise<void>;
     /**
      * 根据ID获得信息
      * @param entity 实体
      * @param id id
      */
-    info(id: any, entity: any): Promise<any>;
+    info(id: any, entity?: any): Promise<any>;
     /**
      * 删除
      * @param entity
      * @param ids
      */
-    delete(ids: any, entity: any): Promise<void>;
+    delete(ids: any, entity?: any): Promise<void>;
     /**
      * 修改数据之后执行的操作，修改数据包括默认的：'add'、'update'、'delete' 等方法
      * @param data
@@ -109,7 +113,7 @@ export declare abstract class BaseService extends Service {
      *  @param query 查询条件
      *  @param option 配置信息
      */
-    getPageFind(query: any, option: any, entity: any): any;
+    getPageFind(query: any, option: any, entity?: any): any;
     /**
      * 设置sql
      * @param condition 条件是否成立

@@ -1,6 +1,6 @@
 {
   "name": "egg-cool-cache",
-  "version": "1.2.4",
+  "version": "1.2.8",
   "description": "cool-admin.com 注解式缓存",
   "main": "index.js",
   "types": "index.d.ts",
@@ -9,7 +9,6 @@
   },
 
   "dependencies": {
-    "egg-cool-router": "^1.2.2"
   },
 
   "keywords": [

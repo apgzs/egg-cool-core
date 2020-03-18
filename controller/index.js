@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const tslib_1 = require("tslib");
 const egg_1 = require("egg");
-const router_1 = require("router");
+const router_1 = require("egg-cool-router");
 /**
  * 控制器基类
  */
@@ -23,6 +23,7 @@ class BaseController extends egg_1.Controller {
      */
     setService(service) {
         this.OpService = service;
+        this.OpService.setEntity(this.entity);
     }
     /**
      * 配置分页查询

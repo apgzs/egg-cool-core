@@ -1,8 +1,11 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
 const egg_1 = require("egg");
 const typeorm_1 = require("typeorm");
 const _ = require("lodash");
+const assert = require("assert");
 // 基础配置
 const conf = {
     size: 15,
@@ -18,6 +21,20 @@ class BaseService extends egg_1.Service {
     constructor(ctx) {
         super(ctx);
         this.sqlParams = [];
+        this.assert = assert;
+    }
+    /**
+     * 设置实体
+     * @param entity 
+     */
+    async setEntity(entity) {
+        this.entity = entity;
+    }
+    /**
+     * 获得Assert
+     */
+    async getAssert() {
+        return assert;
     }
     /**
      * 执行SQL并获得分页数据
@@ -26,7 +43,9 @@ class BaseService extends egg_1.Service {
      * @param connectionName 连接名称
      */
     async sqlRenderPage(sql, query, connectionName) {
-        const { size = conf.size, page = 1, order = 'createTime', sort = 'desc' } = query;
+        const {
+            size = conf.size, page = 1, order = 'createTime', sort = 'desc'
+        } = query;
         if (order && sort) {
             if (!await this.paramSafetyCheck(order + sort)) {
                 throw new Error('非法传参~');
@@ -87,6 +106,7 @@ class BaseService extends egg_1.Service {
      * @param option
      */
     async page(query, option, entity) {
+        entity = entity ? entity : this.entity;
         if (!entity)
             throw new Error(conf.errTips.noEntity);
         const find = await this.getPageFind(query, option, entity);
@@ -97,6 +117,7 @@ class BaseService extends egg_1.Service {
      * @param entity
      */
     async list(entity) {
+        entity = entity ? entity : this.entity;
         if (!entity)
             throw new Error(conf.errTips.noEntity);
         return await entity.find();
@@ -107,12 +128,12 @@ class BaseService extends egg_1.Service {
      * @param param 数据
      */
     async addOrUpdate(param, entity) {
+        entity = entity ? entity : this.entity;
         if (!entity)
             throw new Error(conf.errTips.noEntity);
         if (param.id) {
             await entity.update(param.id, param);
-        }
-        else {
+        } else {
             await entity.save(param);
         }
     }
@@ -122,9 +143,10 @@ class BaseService extends egg_1.Service {
      * @param param 数据
      */
     async add(param, entity) {
+        entity = entity ? entity : this.entity;
         if (!entity)
             throw new Error(conf.errTips.noEntity);
-        await this.addOrUpdate(param,entity);
+        await this.addOrUpdate(param, entity);
         await this.modifyAfter(param);
     }
     /**
@@ -133,11 +155,12 @@ class BaseService extends egg_1.Service {
      * @param param 数据
      */
     async update(param, entity) {
+        entity = entity ? entity : this.entity;
         if (!entity)
             throw new Error(conf.errTips.noEntity);
         if (!param.id)
             throw new Error(conf.errTips.noId);
-        await this.addOrUpdate(param,entity);
+        await this.addOrUpdate(param, entity);
         await this.modifyAfter(param);
     }
     /**
@@ -146,9 +169,12 @@ class BaseService extends egg_1.Service {
      * @param id id
      */
     async info(id, entity) {
+        entity = entity ? entity : this.entity;
         if (!entity)
             throw new Error(conf.errTips.noEntity);
-        return await entity.findOne({ id });
+        return await entity.findOne({
+            id
+        });
     }
     /**
      * 删除
@@ -156,12 +182,12 @@ class BaseService extends egg_1.Service {
      * @param ids
      */
     async delete(ids, entity) {
+        entity = entity ? entity : this.entity;
         if (!entity)
             throw new Error(conf.errTips.noEntity);
         if (ids instanceof Array) {
             await entity.delete(ids);
-        }
-        else {
+        } else {
             await entity.delete(ids.split(','));
         }
         await this.modifyAfter(ids);
@@ -172,15 +198,16 @@ class BaseService extends egg_1.Service {
      * @param data
      * @returns {Promise<void>}
      */
-    async modifyAfter(data) {
-    }
+    async modifyAfter(data) {}
     /**
      * query
      * @param data
      * @param query
      */
     renderPage(data, query) {
-        const { size = conf.size, page = 1 } = query;
+        const {
+            size = conf.size, page = 1
+        } = query;
         return {
             list: data[0],
             pagination: {
@@ -197,7 +224,10 @@ class BaseService extends egg_1.Service {
      *  @param option 配置信息
      */
     getPageFind(query, option, entity) {
-        let { size = conf.size, page = 1, order = 'createTime', sort = 'desc', keyWord = '' } = query;
+        entity = entity ? entity : this.entity;
+        let {
+            size = conf.size, page = 1, order = 'createTime', sort = 'desc', keyWord = ''
+        } = query;
         const find = entity
             .createQueryBuilder()
             .take(parseInt(size))
@@ -219,7 +249,9 @@ class BaseService extends egg_1.Service {
                 find.andWhere(new typeorm_1.Brackets(qb => {
                     const keyWordLikeFields = option.keyWordLikeFields;
                     for (let i = 0; i < option.keyWordLikeFields.length; i++) {
-                        qb.orWhere(`${keyWordLikeFields[i]} like :keyWord`, { keyWord });
+                        qb.orWhere(`${keyWordLikeFields[i]} like :keyWord`, {
+                            keyWord
+                        });
                     }
                 }));
             }
