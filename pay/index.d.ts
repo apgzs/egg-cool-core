@@ -20,4 +20,10 @@ declare module 'egg' {
     interface Application {
         createOrderNum: any;
     }
+    interface Application {
+        initWxPay: any;
+    }
+    interface Application {
+        initAliPay: any;
+    }
 }

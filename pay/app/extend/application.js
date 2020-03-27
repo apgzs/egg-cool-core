@@ -62,5 +62,18 @@ module.exports = {
         } else {
             return `${moment().format('YYYYMMDD')}000${redisNum}`;
         }
+    },
+     /**
+     * 微信支付
+     */
+    initWxPay(config) {
+        const isDev = this.config.env === 'pro';
+        return new tenpay(config, isDev);
+    },
+    /**
+     * 支付宝支付
+     */
+    initAliPay(config) {
+        return new alipay(config);
     }
 };

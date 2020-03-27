@@ -44,7 +44,7 @@ class BaseService extends egg_1.Service {
      */
     async sqlRenderPage(sql, query, connectionName) {
         const {
-            size = conf.size, page = 1, order = 'createTime', sort = 'desc'
+            size = conf.size, page = 1, order = 'createTime', sort = 'desc', isExport = false, maxExportLimit
         } = query;
         if (order && sort) {
             if (!await this.paramSafetyCheck(order + sort)) {
@@ -52,9 +52,16 @@ class BaseService extends egg_1.Service {
             }
             sql += ` ORDER BY ${order} ${sort}`;
         }
-        this.sqlParams.push((page - 1) * size);
-        this.sqlParams.push(parseInt(size));
-        sql += ' LIMIT ?,? ';
+        if (isExport && maxExportLimit > 0) {
+            this.sqlParams.push(parseInt(maxExportLimit));
+            sql += ' LIMIT ? ';
+        }
+        if (!isExport) {
+            this.sqlParams.push((page - 1) * size);
+            this.sqlParams.push(parseInt(size));
+            sql += ' LIMIT ?,? ';
+        } 
+
         let params = [];
         params = params.concat(this.sqlParams);
         const result = await this.nativeQuery(sql, params, connectionName);
@@ -226,12 +233,19 @@ class BaseService extends egg_1.Service {
     getPageFind(query, option, entity) {
         entity = entity ? entity : this.entity;
         let {
-            size = conf.size, page = 1, order = 'createTime', sort = 'desc', keyWord = ''
+            size = conf.size, page = 1, order = 'createTime', sort = 'desc', keyWord = '', isExport = false, maxExportLimit
         } = query;
         const find = entity
             .createQueryBuilder()
-            .take(parseInt(size))
-            .skip(String((page - 1) * size));
+
+        if (isExport && maxExportLimit > 0) {
+            find.take(parseInt(maxExportLimit))
+                .skip(String(0));
+        }
+        if (!isExport) {
+            find.take(parseInt(size))
+                .skip(String((page - 1) * size));
+        }
         if (option) {
             // 默认条件
             if (option.where) {
