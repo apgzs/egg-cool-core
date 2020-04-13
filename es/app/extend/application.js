@@ -91,7 +91,7 @@ module.exports = {
             })
         };
         // 创建索引
-        const crateIndex = function (body, refresh = false) {
+        const crateIndex = function (body, refresh = false, waitForActiveShards = 1) {
             if (body.id) {
                 const id = body.id;
                 delete body.id;
@@ -99,6 +99,7 @@ module.exports = {
                     id,
                     index: model,
                     refresh,
+                    waitForActiveShards,
                     type: '_doc',
                     body
                 })
@@ -106,13 +107,14 @@ module.exports = {
                 return es.index({
                     index: model,
                     refresh,
+                    waitForActiveShards,
                     type: '_doc',
                     body
                 })
             }
         };
         // 批量操作 type： index、create、delete、update
-        const batchIndex = function (bodys, type = 'index', refresh = false) {
+        const batchIndex = function (bodys, type = 'index', refresh = false, waitForActiveShards = 1) {
             const list = [];
             for (const body of bodys) {
                 const typeO = {};
@@ -126,6 +128,7 @@ module.exports = {
                 }
             }
             return es.bulk({
+                waitForActiveShards,
                 index: model,
                 refresh,
                 type: '_doc',
@@ -133,17 +136,18 @@ module.exports = {
             })
         };
         // 删除索引
-        const deleteById = function (id, refresh = false) {
+        const deleteById = function (id, refresh = false, waitForActiveShards = 1) {
             assert(id, 'id cannot be empty');
             return es.delete({
                 index: model,
                 type: '_doc',
                 refresh,
+                waitForActiveShards,
                 id
             })
         };
         // 批量删除索引
-        const deleteByIds = function (ids = [], refresh = false) {
+        const deleteByIds = function (ids = [], refresh = false, waitForActiveShards = 1) {
             const body = {
                 query: {
                     bool: {
@@ -161,24 +165,27 @@ module.exports = {
                 index: model,
                 type: '_doc',
                 refresh,
+                waitForActiveShards,
                 body
             })
         };
         // 批量删除索引
-        const deleteByQuery = function (body, refresh = false) {
+        const deleteByQuery = function (body, refresh = false, waitForActiveShards = 1) {
             return es.deleteByQuery({
                 index: model,
                 type: '_doc',
                 refresh,
+                waitForActiveShards,
                 body
             })
         };
         // 更新索引
-        const updateById = function (body, refresh = false) {
+        const updateById = function (body, refresh = false, waitForActiveShards = 1) {
             const id = body.id;
             assert(id, 'id cannot be empty');
             delete body.id;
             return es.update({
+                waitForActiveShards,
                 index: model,
                 type: '_doc',
                 id: id,
