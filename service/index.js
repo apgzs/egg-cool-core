@@ -96,7 +96,7 @@ class BaseService extends egg_1.Service {
      */
     async paramSafetyCheck(params) {
         const lp = params.toLowerCase();
-        return !(lp.indexOf('update') > -1 || lp.indexOf('select') > -1 || lp.indexOf('delete') > -1 || lp.indexOf('insert') > -1);
+        return !(lp.indexOf('update ') > -1 || lp.indexOf('select ') > -1 || lp.indexOf('delete ') > -1 || lp.indexOf('insert ') > -1);
     }
     /**
      * 获得查询个数的SQL
